@@ -8,18 +8,10 @@
     "start": "node dist/index.js",
     "dev": "nodemon --watch ./src --ext ts --exec \"npm run build && npm run start\""
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/aliabbaschadhar/Vercel.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/aliabbaschadhar/Vercel/issues"
-  },
-  "homepage": "https://github.com/aliabbaschadhar/Vercel#readme",
   "dependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
