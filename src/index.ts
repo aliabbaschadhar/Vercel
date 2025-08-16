@@ -5,13 +5,17 @@ import simpleGit from "simple-git"
 import path from "path"
 import { getAllFiles } from "./file"
 import { uploadFile } from "./aws"
+import { createClient } from "redis"
 
 
 const app = express()
 const PORT = process.env.PORT || 3000
+const publisher = createClient()
+
 
 app.use(express.json())
 app.use(cors())
+publisher.connect()
 
 
 app.post("/deploy", async (req, res) => {
@@ -31,6 +35,9 @@ app.post("/deploy", async (req, res) => {
     // --> slice(__dirname.length) will remove the string till /dist and result would be /output/randomstring/src/app.tsx
     await uploadFile(file.slice(__dirname.length + 1), file)
   })
+
+  // Push the id to redis queue
+  publisher.lPush("build-queue", id)
 
   res.status(200).json({ message: "Deployment triggered", id })
 })
