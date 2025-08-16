@@ -19,6 +19,7 @@
     "simple-git": "^3.28.0"
   },
   "scripts": {
-    "dev": "nodemon --exec bun src/index.ts"
+    "dev": "nodemon --exec bun src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun"
   }
 }

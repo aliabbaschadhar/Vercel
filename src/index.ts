@@ -1,5 +1,7 @@
 import express from "express"
 import cors from "cors"
+import simpleGit from "simple-git"
+import { generate } from "./utils"
 
 
 const app = express()
@@ -13,11 +15,13 @@ app.get("/", (req, res) => {
   res.json({ "msg": "Hello World" })
 })
 
-app.post("/deploy", (req, res) => {
+
+app.post("/deploy", async (req, res) => {
   const { repoUrl } = req.body
   console.log(repoUrl)
-
-  res.json({ msg: repoUrl })
+  const id = generate()
+  await simpleGit().clone(repoUrl, `output/${id}`)
+  res.json({ id: id })
 })
 
 
