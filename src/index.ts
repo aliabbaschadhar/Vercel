@@ -4,6 +4,7 @@ import { generate } from "./utils"
 import simpleGit from "simple-git"
 import path from "path"
 import { getAllFiles } from "./file"
+import { uploadFile } from "./aws"
 
 
 const app = express()
@@ -24,6 +25,12 @@ app.post("/deploy", async (req, res) => {
 
   const files = getAllFiles(path.join(__dirname, `output/${id}`))
   console.log(files)
+
+  files.forEach(async (file) => {
+    // /users/aliabbaschadhar/vercel/dist/output/randomstring/src/app.tsx
+    // --> slice(__dirname.length) will remove the string till /dist and result would be /output/randomstring/src/app.tsx
+    await uploadFile(file.slice(__dirname.length + 1), file)
+  })
 
   res.status(200).json({ message: "Deployment triggered", id })
 })
