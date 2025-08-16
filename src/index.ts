@@ -1,31 +1,34 @@
 import express from "express"
 import cors from "cors"
-import simpleGit from "simple-git"
 import { generate } from "./utils"
+import simpleGit from "simple-git"
+import path from "path"
+import { getAllFiles } from "./file"
 
 
 const app = express()
 const PORT = process.env.PORT || 3000
 
-
-app.use(cors())
 app.use(express.json())
-
-app.get("/", (req, res) => {
-  res.json({ "msg": "Hello World" })
-})
+app.use(cors())
 
 
 app.post("/deploy", async (req, res) => {
   const { repoUrl } = req.body
-  console.log(repoUrl)
+  if (!repoUrl) {
+    return res.status(400).json({ error: "Repository URL is required" })
+  }
+
   const id = generate()
-  await simpleGit().clone(repoUrl, `output/${id}`)
-  res.json({ id: id })
+  await simpleGit().clone(repoUrl, path.join(__dirname, `output/${id}`))
+
+  const files = getAllFiles(path.join(__dirname, `output/${id}`))
+  console.log(files)
+
+  res.status(200).json({ message: "Deployment triggered", id })
 })
 
 
-
 app.listen(PORT, () => {
-  console.log("Server is running on port:", PORT)
+  console.log(`Server is running on port ${PORT}`)
 })
