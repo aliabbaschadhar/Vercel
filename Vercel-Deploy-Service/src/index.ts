@@ -1,8 +1,13 @@
-import express from "express"
+import { createClient } from "redis"
 
-const app = express()
-const PORT = process.env.PORT || 3001
+const subscriber = createClient()
+subscriber.connect()
 
-app.listen(PORT, () => {
-  console.log(`Deploy Service is listening on port:${PORT}`)
-})
+async function main() {
+  while (true) {
+    const response = await subscriber.brPop("build-queue", 0)
+    console.log(response)
+  }
+}
+
+main()
