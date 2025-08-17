@@ -17,6 +17,7 @@ app.use(express.json())
 app.use(cors())
 publisher.connect()
 
+// console.log(__dirname) // /home/aliabbaschadhar/Programming/Vercel/Vercel-Upload-Service/dist
 
 app.post("/deploy", async (req, res) => {
   const { repoUrl } = req.body
@@ -33,7 +34,7 @@ app.post("/deploy", async (req, res) => {
   files.forEach(async (file) => {
     // /users/aliabbaschadhar/vercel/dist/output/randomstring/src/app.tsx
     // --> slice(__dirname.length) will remove the string till /dist and result would be /output/randomstring/src/app.tsx
-    await uploadFile(file.slice(__dirname.length + 1), file)
+    await uploadFile(file.slice(__dirname.length + 1), file) // Upload to S3 bucket
   })
 
   // Push the id to redis queue
