@@ -20,11 +20,12 @@ export async function downloadS3Folder(prefix: string) {
     Prefix: prefix
   }).promise()
 
+  console.log(__dirname)
   // [output/hello/index.html, output/hello/index.css ]
-  const allPromises = allFiles.Contents?.forEach(async ({ Key }) => {
+  const allPromises = allFiles.Contents?.map(async ({ Key }) => {
     return new Promise(async (resolve) => {
       if (!Key) {
-        resolve()
+        resolve("")
         return
       }
 
@@ -42,13 +43,14 @@ export async function downloadS3Folder(prefix: string) {
       s3.getObject({
         Bucket: "vercel",
         Key: Key || ""
-      }).createReadStream().pipe(outputFile).on("end", () => {
-        resolve()
+      }).createReadStream().pipe(outputFile).on("finish", () => {
+        resolve("")
       })
       // first data is received and then using writeStream it is written to local file.
 
     })
   }) || []
+  console.log("awaiting")
 
   await Promise.all(allPromises.filter(x => x !== undefined))
 }

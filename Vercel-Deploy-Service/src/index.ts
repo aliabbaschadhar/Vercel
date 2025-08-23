@@ -12,7 +12,8 @@ async function main() {
 
     // Download the react project from S3 to build the project
     const id = response?.element
-    await downloadS3Folder(`/output/${id}`)
+    await downloadS3Folder(`output/${id}`)
+    console.log("downloaded")
   }
 }
 
