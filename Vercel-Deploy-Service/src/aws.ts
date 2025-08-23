@@ -1,8 +1,6 @@
 import { S3 } from "aws-sdk"
-import { dir } from "console"
 import { configDotenv } from "dotenv"
 import fs from "fs"
-import path, { dirname } from "path"
 configDotenv()
 
 const s3 = new S3({
