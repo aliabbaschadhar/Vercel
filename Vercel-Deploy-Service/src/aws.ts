@@ -2,6 +2,7 @@ import { S3 } from "aws-sdk"
 import path from "path"
 import { configDotenv } from "dotenv"
 import fs from "fs"
+import { waitForDebugger } from "inspector"
 configDotenv()
 
 const s3 = new S3({
@@ -114,4 +115,54 @@ export async function downloadS3Folder(prefix: string) {
     console.error('Error in downloadS3Folder:', error)
     throw error
   }
+}
+
+export async function copyBuildCode(id: string) {
+  const folderPath = path.join(__dirname, `output/${id}/dist`)
+  console.log(folderPath) // /home/aliabbaschadhar/Programming/Vercel/Vercel-Deploy-Service/dist/output/yzc7n/dist
+  const allFiles: string[] = getAllFiles(folderPath) || []
+
+  allFiles.forEach((file) => {
+    uploadFile(`dist/${id}/` + file.slice(folderPath.length + 1), file)
+  })
+}
+
+export async function uploadFile(fileName: string, localFilePath: string) {
+  const fileContent = fs.readFileSync(localFilePath)
+  try {
+    const response = await s3.upload({
+      Body: fileContent,
+      Bucket: "vercel",
+      Key: fileName
+    }).promise()
+
+    if (response) {
+      console.log(`File: ${fileName} uploaded successfully.`)
+    }
+    console.log("All files uploaded successfully!")
+  } catch (error) {
+    console.error("Error happened while uploading files ", error)
+    throw error
+  }
+}
+
+export function getAllFiles(folderPath: string) {
+  let response: string[] = []
+
+  // Read all entries (files and folders) in the current directory
+  const allFilesAndFolders: string[] = fs.readdirSync(folderPath)
+
+  // Process each entry
+  allFilesAndFolders.forEach(fileOrFolder => {
+    const fullPath = path.join(folderPath, fileOrFolder) // Get absolute path
+    if (fs.statSync(fullPath).isDirectory()) {
+      // If entry is a directory, recursively collect its files
+      response = response.concat(getAllFiles(fullPath))
+    } else {
+      // If entry is a file, add its path to the response
+      response.push(fullPath)
+    }
+  })
+
+  return response // Return all collected file paths
 }

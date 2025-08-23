@@ -1,5 +1,5 @@
 import { createClient } from "redis"
-import { downloadS3Folder } from "./aws"
+import { copyBuildCode, downloadS3Folder } from "./aws"
 import { buildProjects } from "./utils"
 
 const subscriber = createClient()
@@ -28,6 +28,8 @@ async function main() {
       console.log('Download completed for ID:', id)
 
       await buildProjects(id)
+
+      await copyBuildCode(id)
 
     } catch (error) {
       console.error('Error in main loop:', error)
