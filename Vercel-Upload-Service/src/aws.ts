@@ -13,13 +13,19 @@ const s3 = new S3({
 // filePath ===> /Users/aliabbaschadhar/vercel/dist/output/12312/src/App.tsx
 
 export const uploadFile = async (fileName: string, localFilePath: string) => {
-  console.log("called");
-  const fileContent = fs.readFileSync(localFilePath);
-  const response = await s3.upload({
-    Body: fileContent,
-    Bucket: "vercel",
-    Key: fileName,
-  }).promise();
+  try {
+    console.log(`Uploading file: ${fileName} from ${localFilePath}`);
+    const fileContent = fs.readFileSync(localFilePath);
+    const response = await s3.upload({
+      Body: fileContent,
+      Bucket: "vercel",
+      Key: fileName,
+    }).promise();
 
-  console.log(response)
+    console.log(`Successfully uploaded: ${fileName}`)
+    return response
+  } catch (error) {
+    console.error(`Failed to upload ${fileName}:`, error)
+    throw error
+  }
 }
