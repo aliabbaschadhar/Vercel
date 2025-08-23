@@ -5,6 +5,9 @@ import { buildProjects } from "./utils"
 const subscriber = createClient()
 subscriber.connect()
 
+const publisher = createClient()
+publisher.connect()
+
 async function main() {
   while (true) {
     try {
@@ -30,6 +33,8 @@ async function main() {
       await buildProjects(id)
 
       await copyBuildCode(id)
+
+      await publisher.hSet("status", id, "Deployed")
 
     } catch (error) {
       console.error('Error in main loop:', error)

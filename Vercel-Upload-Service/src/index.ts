@@ -53,6 +53,9 @@ app.post("/deploy", async (req, res) => {
     await publisher.lPush("build-queue", id)
     console.log(`Build queued for ID: ${id}`)
 
+    await publisher.hSet("status", id, "uploaded")
+    console.log("Status: Uploaded")
+
     res.status(200).json({ message: "Deployment triggered", id })
   } catch (error) {
     console.error('Deployment error:', error)
