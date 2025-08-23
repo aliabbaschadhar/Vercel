@@ -1,4 +1,5 @@
 import { S3 } from "aws-sdk"
+import path from "path"
 import { configDotenv } from "dotenv"
 import fs from "fs"
 configDotenv()
