@@ -1,5 +1,6 @@
 import { createClient } from "redis"
 import { downloadS3Folder } from "./aws"
+import { buildProjects } from "./utils"
 
 const subscriber = createClient()
 subscriber.connect()
@@ -22,9 +23,11 @@ async function main() {
 
       console.log('Processing deployment ID:', id)
 
-      // Use the correct prefix format (no leading slash)
+      // Use the correct prefix format (no leading slash) 
       await downloadS3Folder(`output/${id}`)
       console.log('Download completed for ID:', id)
+
+      await buildProjects(id)
 
     } catch (error) {
       console.error('Error in main loop:', error)
