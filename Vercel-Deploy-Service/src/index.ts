@@ -7,6 +7,7 @@ subscriber.connect()
 async function main() {
   while (true) {
     const response = await subscriber.brPop("build-queue", 0)
+    // 0 means wait indefinitely until an item is available in the list.
     console.log(response)
 
     // Download the react project from S3 to build the project
