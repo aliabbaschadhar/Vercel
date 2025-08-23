@@ -11,11 +11,13 @@ import { createClient } from "redis"
 const app = express()
 const PORT = process.env.PORT || 3000
 const publisher = createClient()
+const subscriber = createClient()
 
 
 app.use(express.json())
 app.use(cors())
 publisher.connect()
+subscriber.connect()
 
 // console.log(__dirname) // /home/aliabbaschadhar/Programming/Vercel/Vercel-Upload-Service/dist
 
@@ -63,6 +65,15 @@ app.post("/deploy", async (req, res) => {
   }
 })
 
+
+app.get("/status", async (req, res) => {
+  const id = req.query.id
+  const response = await subscriber.hGet("status", id as string)
+
+  res.json({
+    status: response
+  })
+})
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)

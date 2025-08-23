@@ -125,6 +125,7 @@ export async function copyBuildCode(id: string) {
   allFiles.forEach((file) => {
     uploadFile(`dist/${id}/` + file.slice(folderPath.length + 1), file)
   })
+  console.log("All files uploaded successfully!")
 }
 
 export async function uploadFile(fileName: string, localFilePath: string) {
@@ -139,7 +140,6 @@ export async function uploadFile(fileName: string, localFilePath: string) {
     if (response) {
       console.log(`File: ${fileName} uploaded successfully.`)
     }
-    console.log("All files uploaded successfully!")
   } catch (error) {
     console.error("Error happened while uploading files ", error)
     throw error
